@@ -1,80 +1,60 @@
 import random
 
-
-
 import telebot
 
 from telebot import types
 
 import sqlite3
 
-
+import db
+from db import getMealById
 
 # File handling
+category_meat = 1;
+category_fish = 2;
+category_desserts = 3;
+category_pizza = 4;
+category_veggies = 5;
+category_tips = 6;
+category_add = 7;
 
-with open('vegetarian.txt') as f:
-
-    veggies = f.read().split('\n')
-
-
-
-with open('pizza.txt') as f:
-
-    pizza = f.read().split('\n')
-
-
-
-with open('meat.txt') as f:
-
-    meat = f.read().split('\n')
-
-
-
-with open('fish.txt') as f:
-
-    fish = f.read().split('\n')
-
-
-
-with open('desserts.txt') as f:
-
-    desserts = f.read().split('\n')
-
-
-
-with open('tips') as f:
-
-    tip = f.read().split('\n')
-
-
-
-with open('added') as f:
-
-    adding = f.read().split('\n')
-
-
+# with open('vegetarian.txt') as f:
+#     veggies = f.read().split('\n')
+#
+# with open('pizza.txt') as f:
+#     pizza = f.read().split('\n')
+#
+# with open('meat.txt') as f:
+#     meat = f.read().split('\n')
+#     recipe,url = db.getMealById(category_meat)
+#
+# with open('fish.txt') as f:
+#     fish = f.read().split('\n')
+#     fish = db.getMealById(2)
+#
+# with open('desserts.txt') as f:
+#     desserts = f.read().split('\n')
+#
+# with open('tips') as f:
+#     tip = f.read().split('\n')
+#
+# with open('added') as f:
+#     adding = f.read().split('\n')
 
 # Creating the bot with the token given from the bot father
 
 bot = telebot.TeleBot('5958693209:AAEeFOmaTbyJLzcyZmbiZ9TRmkILZlWlbA8')
 
 
-
-
-
 # Running the bot
 
 @bot.message_handler(commands=["start"])
-
 def start(m, res=False):
-
     # Connecting to database
 
     connect = sqlite3.connect('fish.db')
 
     cursor = connect.cursor()
-
-
 
     cursor.execute("""CREATE TABLE IF NOT EXISTS fish_recipes(
 
@@ -86,11 +66,7 @@ def start(m, res=False):
 
     )""")
 
-
-
     connect.commit()
-
-
 
     # Adding the buttons
 
@@ -129,57 +105,58 @@ def start(m, res=False):
                      reply_markup=markup)
 
 
-
-
-
 # Receiving message from the user
 
 @bot.message_handler(content_types=["text"])
-
 def handle_text(message):
-
     global answer
 
     match message.text.strip():
 
         case '🥗 Vegetarian':
 
-            answer = random.choice(veggies)
+            # answer = random.choice(veggies)
+            category_dish = category_veggies
 
         case '🍕 Pizza':
 
-            answer = random.choice(pizza)
+            # answer = random.choice(pizza)
+            category_dish = category_pizza
 
         case '🥩 Meat':
 
-            answer = random.choice(meat)
+            # answer = random.choice(meat)
+            # answer = meat
+            category_dish = category_meat
 
         case '🐟 Fish':
 
-            answer = random.choice(fish)
+            # answer = random.choice(fish)
+            category_dish = category_fish
 
         case '🧁 Desserts':
 
-            answer = random.choice(desserts)
+            # answer = random.choice(desserts)
+            category_dish = category_desserts
 
         case '📌 Useful tips':
 
-            answer = random.choice(tip)
+            # answer = random.choice(tip)
+            category_dish = category_tips
 
         case '📝 Add a recipe':
 
-            answer = random.choice(adding)
-
-
+            # answer = random.choice(adding)
+            category_dish = category_add
 
     # Sending the user the recipe
-
-    bot.send_message(message.chat.id, answer)
-
-
-
+    answer, dish_name_res,instructions_res,url = db.getMealById(category_dish)
+    bot.send_message(message.chat.id, dish_name_res)
+    meat_url = """https://img.freepik.com/free-photo/front-view-big-meat-slice-raw-meat-with-pepper-greens-dark-photo-chicken-meal-animal-barbecue-food-butcher_179666-43725.jpg?w=2000"""
+    if len(url) > 1:
+        bot.send_photo(message.chat.id, url,instructions_res)
 
 
 # Starting the bot
 
-bot.polling(none_stop=True, interval=0)
+bot.polling(none_stop=True, interval=3)

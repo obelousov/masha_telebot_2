@@ -1,12 +1,14 @@
 import sqlite3 as sql
 
-recipe_list = [(1,2,'fish','fry')]
+recipe_list = [(1, 2, 'fish', 'fry')]
 db_name = 'telebot.db';
 table_name = "all_recipes";
 id_dish = 0;
 category_dish = 1;
 dish_name = 2;
 instructions = 3;
+image = 4;
+
 
 def create_db():
     with sql.connect('telebot.db') as db:
@@ -22,6 +24,7 @@ def create_db():
         db.commit()
         # db.close()
 
+
 def insertMultipleRecords(recordList):
     try:
         sqliteConnection = sql.connect('telebot.db')
@@ -34,7 +37,8 @@ def insertMultipleRecords(recordList):
 
         cursor.executemany(sqlite_insert_query, recordList)
         sqliteConnection.commit()
-        print("Total", cursor.rowcount, "Records inserted successfully into all_recipes table")
+        print("Total", cursor.rowcount,
+              "Records inserted successfully into all_recipes table")
         sqliteConnection.commit()
         cursor.close()
 
@@ -44,6 +48,7 @@ def insertMultipleRecords(recordList):
         if sqliteConnection:
             sqliteConnection.close()
             # print("The SQLite connection is closed")
+
 
 def getMealById(id):
     try:
@@ -68,14 +73,16 @@ category_dish = %s
 dish_name = %s
 instructions  = %s
 """ % (row[id_dish], row[category_dish],
-                            row[dish_name],row[instructions])
-
+       row[dish_name], row[instructions])
+            dish_name_res = row[dish_name]
+            instructions_res = row[instructions]
+            url = row[image]
             # print("ID = ", row[id_dish])
             # print("category_dish = ", row[category_dish])
             # print("dish_name = ", row[dish_name])
             # print("instructions  = ", row[instructions])
         cursor.close()
-        return result
+        return result, dish_name_res,instructions_res,url
 
     except sql.Error as error:
         print("Failed to read data from sqlite table", error)
@@ -83,6 +90,7 @@ instructions  = %s
         if sqliteConnection:
             sqliteConnection.close()
             # print("The SQLite connection is closed")
+
 
 # create_db();
 
@@ -94,4 +102,4 @@ instructions  = %s
 
 # select_item(1)
 
-print(getMealById(2))
+print(getMealById(1))
