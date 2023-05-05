@@ -39,7 +39,7 @@ Installation
 
 To install and run the bot, follow these steps:
 
-Clone the repository: git clone https://github.com/yourusername/telegram-recipe-bot.git
+Clone the repository: git clone https://github.com/obelousov/masha_telebot_2.git
 Install the required libraries: pip install -r requirements.txt
 Set up a MongoDB database and add the connection string to config.py.
 Run the bot: python bot.py
