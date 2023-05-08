@@ -9,7 +9,7 @@ dish_name = 2;
 instructions = 3;
 image = 4;
 
-
+#Creating a table
 def create_db():
     with sql.connect('telebot.db') as db:
         cursor = db.cursor()
@@ -25,6 +25,8 @@ def create_db():
         # db.close()
 
 
+
+#Inserting records
 def insertMultipleRecords(recordList):
     try:
         sqliteConnection = sql.connect('telebot.db')
@@ -102,4 +104,6 @@ instructions  = %s
 
 # select_item(1)
 
+
+#Printing
 print(getMealById(1))
